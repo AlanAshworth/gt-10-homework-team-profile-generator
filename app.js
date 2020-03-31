@@ -101,5 +101,27 @@ function getTeam() {
     } else {
         team.push(new Intern(data.name, data.id, data.email, data.school));
     }
+    addMember();
 }).catch((error) => {console.log(error)});
+}
+
+function addMember(){
+    inquirer.prompt([{
+        name: "addMember",
+        type: "list",
+        message: "Would you like to add another member?",
+        choices: ["yes", "no"]
+    }]).then((data) => {
+        if (data.addMember === "yes") {
+            this.getTeam();
+        } else {
+            fs.writeFile(outputPath, render(team), (error) => {
+                if (error) {
+                    throw error;
+                } else {
+                    console.log("Successfully created ", outputPath);
+                }
+            });
+        }
+    })
 }
