@@ -4,12 +4,12 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
-​
-const OUTPUT_DIR = path.resolve(__dirname, "output")
-const outputPath = path.join(OUTPUT_DIR, "team.html");
-​
 const render = require("./lib/htmlRenderer");
 ​
+const OUTPUT_DIR = path.resolve(__dirname, "output");
+const outputPath = path.join(OUTPUT_DIR, "team.html");
+​
+var team = [];
 ​
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
@@ -33,3 +33,35 @@ const render = require("./lib/htmlRenderer");
 // for further information. Be sure to test out each class and verify it generates an 
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work!```
+
+buildTeam();
+
+function buildTeam() {
+    getManager();
+}
+
+function getManager() {
+    return inquirer.prompt([{
+        name: "role",
+        type: "input",
+        message: "Plase add a team manager. What is the manager's name?"
+    },
+    {
+        name: "id",
+        type: "input",
+        message: "What is the manager's ID?"
+    },
+    {
+        name: "email",
+        type: "input",
+        message: "What is the manager's email address?"
+    },
+    {
+        name: "officeNumber",
+        type: "input",
+        message: "What is the manager's office number?"
+    }
+]).then(data => {
+    team.push(new Manager(data.name, data.id, data.email, data.officeNumber));
+}).catch((error) => {console.log(error)});
+}
