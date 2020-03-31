@@ -5,7 +5,6 @@ const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 const render = require("./lib/htmlRenderer");
-​
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 ​
@@ -38,6 +37,7 @@ buildTeam();
 
 function buildTeam() {
     getManager();
+    getTeam();
 }
 
 function getManager() {
@@ -63,5 +63,43 @@ function getManager() {
     }
 ]).then(data => {
     team.push(new Manager(data.name, data.id, data.email, data.officeNumber));
+}).catch((error) => {console.log(error)});
+}
+
+function getTeam() {
+    return inquirer.prompt([{
+        name: "role",
+        type: "list",
+        message: "Plase add a team role. What role would you like to add?",
+        choices: ["Engineer", "Intern"]
+    },
+    {
+        name: "id",
+        type: "input",
+        message: "What is the team member's ID?"
+    },
+    {
+        name: "email",
+        type: "input",
+        message: "What is the team member's email address?"
+    },
+    {
+        name: "github",
+        type: "input",
+        message: "What is the engineer's github username?",
+        when: (data) => data.role === "Engineer"
+    },
+    {
+        name: "school",
+        type: "input",
+        message: "What is the interns's school?",
+        when: (data) => data.role === "Intern"
+    }
+]).then(data => {
+    if (data.role === "Engineer") {
+        team.push(new Engineer(data.name, data.id, data.email, data.github));
+    } else {
+        team.push(new Intern(data.name, data.id, data.email, data.school));
+    }
 }).catch((error) => {console.log(error)});
 }
