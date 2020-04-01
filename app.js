@@ -7,72 +7,63 @@ const fs = require("fs");
 const render = require("./lib/htmlRenderer");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
+var isManaged = false;
 var team = [];
-var hasManager = false;
 
 const getTeam = () => {
   return inquirer
     .prompt([
       {
-        name: "role",
         type: "list",
+        name: "role",
         message: "Enter the person's role:",
         choices: () => {
-          if (!hasManager) {
-            hasManager = !hasManager;
-            return ["Manager"];
-          } else {
-            return ["Engineer", "Intern"];
-          }
+          if (isManaged === false) {
+            isManaged = true;
+            return ["Manager"];} else {return ["Engineer", "Intern"];}
         }
       },
       {
-        name: "name",
         type: "input",
+        name: "name",
         message: "Enter the person's name:"
       },
       {
-        name: "id",
         type: "input",
+        name: "id",
         message: "Enter the person's ID:"
       },
       {
-        name: "email",
         type: "input",
+        name: "email",
         message: "Enter the person's email address:"
       },
       {
+        when: data => data.role === "Manager",
+        type: "input",
         name: "officeNumber",
-        type: "input",
-        message: "Enter the person's office number:",
-        when: data => data.role === "Manager"
+        message: "Enter the person's office number:"
       },
       {
+        when: data => data.role === "Engineer",
+        type: "input",
         name: "github",
-        type: "input",
-        message: "Enter the person's github username:",
-        when: data => data.role === "Engineer"
+        message: "Enter the person's github username:"
       },
       {
-        name: "school",
+        when: data => data.role === "Intern",
         type: "input",
-        message: "Enter the person's school:",
-        when: data => data.role === "Intern"
+        name: "school",
+        message: "Enter the person's school:"
       }
     ])
     .then(data => {
-      switch (data.role) {
-        case "Manager":
-          team.push(new Manager(data.name, data.id, data.email, data.officeNumber));
-          break;
-        case "Engineer":
-          team.push(new Engineer(data.name, data.id, data.email, data.github));
-          break;
-        case "Intern":
-          team.push(new Intern(data.name, data.id, data.email, data.school));
-          break;
-        default:
-          throw new Error("Invalid selection");
+      if(data.role === "Manager") {
+        team.push(new Manager(data.name, data.id, data.email, data.officeNumber));
+      } else if(data.role === "Engineer") {
+        team.push(new Engineer(data.name, data.id, data.email, data.github));
+      } else {
+        team.push(new Intern(data.name, data.id, data.email, data.school));
       }
       getMember();
     })
@@ -85,13 +76,14 @@ const getMember = () => {
   return inquirer
     .prompt([
       {
-        name: "select",
-        type: "confirm",
-        message: "Enter another person?"
+        type: "list",
+        name: "decision",
+        message: "Enter another person?",
+        choices: ["yes", "no"]
       }
     ])
     .then(data => {
-      if (data.select) {
+      if (data.decision === "yes") {
         getTeam();
       } else {
         writeToHTML();
@@ -100,11 +92,9 @@ const getMember = () => {
 };
 
 const writeToHTML = () => {
-  var directory = "./output";
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory);
+  if (!fs.existsSync("./output")) {
+    fs.mkdirSync("./output");
   }
-
   fs.writeFile(outputPath, render(team), error => {
     if (error) throw error;
     console.log("Created successfully");

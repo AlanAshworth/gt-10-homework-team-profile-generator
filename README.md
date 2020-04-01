@@ -54,7 +54,7 @@ None.
 
 ## Questions
 
-<img src="https://avatars3.githubusercontent.com/u/54105679?v=4" alt="avatar" width="50px" height="50px" />
+<img src="https://avatars3.githubusercontent.com/u/54105679?v=4" alt="avatar" width="100px" height="100px" />
 
 Contact me at <a href="mailto:awashworth927@gmail.com">awashworth927@gmail.com</a>
 
