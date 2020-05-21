@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/AlanAshworth/GT-Homework-10-Team-Profile-Generator#readme",
   "dependencies": {
+    "asciiart-logo": "^0.2.6",
     "chalk": "^4.0.0",
     "inquirer": "^7.1.0"
   }
